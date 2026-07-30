@@ -167,11 +167,18 @@ button, .sb-nav li, .task-item, .word-tile, .opt, .shop-item, .switch, .icon-btn
   border-bottom: 1px solid #F1E6D5;
 }
 .topbar-icon {
-  width: 32px; height: 32px; border-radius: 10px;
-  background: linear-gradient(135deg, #FFB36B, #E94B3C);
-  color: #fff; display: flex; align-items: center; justify-content: center;
-  font-size: 18px; box-shadow: var(--shadow);
+  width: 36px; height: 36px; border-radius: 50%;
+  background: linear-gradient(135deg, #FFF5D9, #FFE3A0);
+  color: var(--primary); display: flex; align-items: center; justify-content: center;
+  font-size: 18px; box-shadow: 0 2px 6px rgba(220,120,50,.18);
   flex-shrink: 0;
+  background-image: url('../img/marshall.png');
+  background-size: cover;
+  background-position: center 20%;
+  background-repeat: no-repeat;
+  border: 2px solid #fff;
+  text-indent: -9999px;
+  overflow: hidden;
 }
 .topbar-titles { flex: 1; min-width: 0; }
 .topbar-sub { font-size: 10px; color: var(--muted); }
@@ -213,25 +220,24 @@ button, .sb-nav li, .task-item, .word-tile, .opt, .shop-item, .switch, .icon-btn
   margin-bottom: 10px;
 }
 
-/* ========== 首页：天气条 ========== */
+/* ========== 首页：天气（无底色，直接展示） ========== */
 .weather-bar {
   display: flex; align-items: center; gap: 10px;
-  padding: 10px 12px;
-  background: linear-gradient(135deg, #FFD194, #FFB36B);
-  border-radius: var(--radius);
-  color: #4A2A12;
-  margin-bottom: 14px;
-  box-shadow: var(--shadow);
+  padding: 4px 4px 12px;
+  margin-bottom: 6px;
+  color: var(--ink);
+  border-bottom: 1px dashed #F1E6D5;
 }
-.weather-bar .w-ico { font-size: 30px; }
+.weather-bar .w-ico { font-size: 36px; }
 .weather-bar .w-info { flex: 1; min-width: 0; }
-.weather-bar .w-greet { font-size: 12px; opacity: .9; }
-.weather-bar .w-temp { font-size: 22px; font-weight: 800; line-height: 1; }
-.weather-bar .w-city { font-size: 10px; opacity: .8; margin-top: 2px; }
+.weather-bar .w-greet { font-size: 12px; color: var(--muted); }
+.weather-bar .w-temp { font-size: 20px; font-weight: 800; line-height: 1.1; }
+.weather-bar .w-city { font-size: 10px; color: var(--muted); margin-top: 2px; }
 .weather-bar .w-streak {
-  background: rgba(255,255,255,.7); padding: 4px 10px; border-radius: 999px;
+  background: rgba(255, 247, 234, .9); padding: 5px 11px; border-radius: 999px;
   font-size: 11px; font-weight: 800;
   color: #B45309;
+  border: 1px solid #F2D08A;
   white-space: nowrap;
 }
 
@@ -240,12 +246,13 @@ button, .sb-nav li, .task-item, .word-tile, .opt, .shop-item, .switch, .icon-btn
   background: linear-gradient(135deg, #FFF5D9 0%, #FFE3A0 100%);
   border: 2px solid #F4D78A;
   border-radius: var(--radius);
-  padding: 14px;
+  padding: 14px 14px 14px 14px;
   display: flex; align-items: center; gap: 12px;
-  margin-bottom: 14px;
+  margin-bottom: 16px;
   box-shadow: var(--shadow);
   position: relative;
   overflow: hidden;
+  min-height: 96px;
 }
 .bone-card .bc-jar {
   width: 72px; height: 72px;
@@ -262,21 +269,19 @@ button, .sb-nav li, .task-item, .word-tile, .opt, .shop-item, .switch, .icon-btn
 .bone-card .bc-jar::after {
   content: '🦴'; position: relative; z-index: 1; font-size: 32px;
 }
-.bone-card .bc-info { flex: 1; min-width: 0; }
+.bone-card .bc-info { flex: 1; min-width: 0; z-index: 2; position: relative; }
 .bone-card .bc-label { font-size: 11px; color: #8A6A2A; }
 .bone-card .bc-num { font-size: 26px; font-weight: 800; color: #8A5A14; line-height: 1.1; }
 .bone-card .bc-tip { font-size: 11px; color: #8A6A2A; margin-top: 2px; }
 .bone-card .bc-momo-img {
   position: absolute;
-  right: -4px; bottom: -6px;
+  right: 6px; bottom: 0;
   width: 110px; height: 110px;
+  background: url('../img/marshall.png') no-repeat right bottom;
   background-size: contain;
-  background-repeat: no-repeat;
-  background-position: right bottom;
-  opacity: .95;
+  opacity: 1;
   pointer-events: none;
-  filter: drop-shadow(0 4px 8px rgba(180, 80, 20, .15));
-  transform: rotate(-6deg);
+  z-index: 1;
 }
 
 /* ========== 任务列表 ========== */
@@ -407,14 +412,40 @@ button, .sb-nav li, .task-item, .word-tile, .opt, .shop-item, .switch, .icon-btn
 .line-trace .trace-guide { fill: none; stroke: #E8E2F6; stroke-width: 16; stroke-linecap: round; stroke-dasharray: 6 8; }
 .line-trace .hint-dot { fill: #6E4FE0; }
 
-.selector { display: flex; gap: 6px; flex-wrap: wrap; margin: 6px 0; }
-.selector button {
-  background: #FFFCF6; border: 1px solid var(--line);
-  padding: 6px 10px; border-radius: 999px; font-weight: 700; cursor: pointer;
-  font-size: 12px;
+/* ========== 通用：胶囊形 Tab 切换 ========== */
+.tabs-pill {
+  display: flex; gap: 6px;
+  background: #FFF;
+  padding: 5px;
+  border-radius: 999px;
+  border: 1px solid #F1E6D5;
+  box-shadow: var(--shadow);
+  margin-bottom: 12px;
+  overflow-x: auto;
 }
-.selector button.active {
-  background: var(--primary); color: #fff; border-color: var(--primary);
+.tabs-pill::-webkit-scrollbar { display: none; }
+.tabs-pill button {
+  flex: 1;
+  background: transparent;
+  border: none;
+  padding: 8px 12px;
+  border-radius: 999px;
+  font-weight: 700;
+  font-size: 13px;
+  color: var(--ink-2);
+  cursor: pointer;
+  white-space: nowrap;
+  transition: .2s;
+  touch-action: manipulation;
+}
+.tabs-pill button.active {
+  background: linear-gradient(135deg, #4C6BFF, #2D8CFF);
+  color: #fff;
+  box-shadow: 0 3px 8px rgba(45,140,255,.3);
+}
+.tabs-pill.ghost button.active {
+  background: linear-gradient(135deg, #E94B3C, #C8341E);
+  box-shadow: 0 3px 8px rgba(233,75,60,.3);
 }
 
 /* 习惯 - 卡片式布局 */
@@ -435,15 +466,25 @@ button, .sb-nav li, .task-item, .word-tile, .opt, .shop-item, .switch, .icon-btn
   background: var(--paper); border: 1px solid #FCEBD3;
   box-shadow: var(--shadow); margin-bottom: 10px;
   transition: .2s;
+  position: relative;
+  overflow: hidden;
 }
-.h-card.done { opacity: .6; background: #F4F0E6; }
+.h-card::before {
+  content: ''; position: absolute;
+  left: 0; top: 12px; bottom: 12px;
+  width: 4px; border-radius: 0 4px 4px 0;
+  background: linear-gradient(180deg, #4CC38A, #2D8CFF);
+}
+.h-card.done { opacity: .55; background: #F4F0E6; }
+.h-card.done::before { background: #B8B0A0; }
 .h-card.done .h-title { text-decoration: line-through; }
 
 /* 左侧大图标块 */
 .h-ico-block {
-  width: 60px; height: 60px; border-radius: 16px;
+  width: 54px; height: 54px; border-radius: 14px;
   display: flex; align-items: center; justify-content: center;
-  font-size: 32px; flex-shrink: 0;
+  font-size: 28px; flex-shrink: 0;
+  margin-left: 4px;
 }
 .h-card.red .h-ico-block { background: linear-gradient(135deg, #FFE2DA, #FFC3B4); }
 .h-card.blue .h-ico-block { background: linear-gradient(135deg, #DCEBFF, #B7D6FF); }
@@ -455,19 +496,25 @@ button, .sb-nav li, .task-item, .word-tile, .opt, .shop-item, .switch, .icon-btn
 .h-title { font-weight: 800; font-size: 15px; }
 .h-desc { font-size: 11px; color: var(--muted); margin-top: 3px; }
 
-/* 右侧打卡按钮 */
+/* 右侧圆圈打卡按钮 */
 .h-check-btn {
   flex-shrink: 0;
-  padding: 8px 16px; border-radius: 999px; border: none;
-  background: linear-gradient(135deg, #E94B3C, #C8341E);
-  color: #fff; font-size: 13px; font-weight: 800;
+  width: 56px; height: 56px;
+  border-radius: 50%; border: 2px solid #E94B3C;
+  background: transparent;
+  color: #E94B3C; font-size: 12px; font-weight: 800;
   cursor: pointer; touch-action: manipulation;
-  box-shadow: 0 4px 8px rgba(233,75,60,.3);
   transition: .2s;
+  display: flex; flex-direction: column; align-items: center; justify-content: center;
+  gap: 1px;
 }
-.h-check-btn:active { transform: translateY(1px); }
+.h-check-btn::before { content: ''; font-size: 14px; }
+.h-check-btn:active { transform: scale(.95); }
 .h-check-btn.checked {
-  background: #4CC38A; box-shadow: 0 4px 8px rgba(76,195,138,.3);
+  background: linear-gradient(135deg, #4CC38A, #2D8CFF);
+  border-color: transparent;
+  color: #fff;
+  box-shadow: 0 4px 10px rgba(76,195,138,.35);
 }
 
 /* 愿望 */

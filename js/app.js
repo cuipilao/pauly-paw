@@ -109,6 +109,13 @@
     clearTimeout(t._t);
     t._t = setTimeout(() => t.hidden = true, ms || 1600);
   }
+  // 统一的胶囊 Tab 按钮生成器
+  function pillBtn(key, name, cur, href) {
+    return el('button', {
+      class: String(key) === String(cur) ? 'active' : '',
+      onclick: () => { location.hash = href; }
+    }, [name]);
+  }
 
   // 浏览器内置 TTS
   function speak(text) {
@@ -207,7 +214,8 @@
   }
   function setTopbar(title, icon) {
     $('#topbarTitle').textContent = title;
-    if (icon) $('#topbarIcon').textContent = icon;
+    // 清空图标文字，CSS 会用 Marshall PNG 背景显示
+    $('#topbarIcon').textContent = '';
   }
   function highlight(route) {
     document.querySelectorAll('#sbNav li').forEach(li => {
@@ -220,7 +228,7 @@
 
   // ====== 首页 ======
   Pages.home = function () {
-    setTopbar('首页 · 泽宝的家', '🏠');
+    setTopbar('首页 · 泽宝的家', '');
     const root = el('div', null, [
       // 天气条（直接展示，不是卡片）
       el('div', { class: 'weather-bar' }, [
@@ -368,16 +376,13 @@
     setTopbar('语文', '📖');
     const sub = location.hash.split('/')[2] || 'pinpin';
     const root = el('div', null, [
-      el('div', { class: 'selector' }, [
-        btn('pinpin', '拼音', sub),
-        btn('shizi', '识字', sub),
-        btn('kantu', '看图说话', sub)
+      el('div', { class: 'tabs-pill' }, [
+        pillBtn('pinpin', '拼音', sub, '#/chinese/pinpin'),
+        pillBtn('shizi', '识字', sub, '#/chinese/shizi'),
+        pillBtn('kantu', '看图说话', sub, '#/chinese/kantu')
       ]),
       el('div', { id: 'chSub' })
     ]);
-    function btn(key, name, cur) {
-      return el('button', { class: key === cur ? 'active' : '', onclick: () => location.hash = '#/chinese/' + key }, [name]);
-    }
     setTimeout(() => {
       if (sub === 'pinpin') $('#chSub').appendChild(Pages._pinyin());
       else if (sub === 'shizi') $('#chSub').appendChild(Pages._shizi());
@@ -508,22 +513,17 @@
     const sub = location.hash.split('/')[2] || 'add';
     const range = parseInt(location.hash.split('/')[3] || '10', 10);
     const root = el('div', null, [
-      el('div', { class: 'selector' }, [
-        btn('add', '加法', sub),
-        btn('sub', '减法', sub),
-        btn('decomp', '分解组合', sub)
+      el('div', { class: 'tabs-pill' }, [
+        pillBtn('add', '加法', sub, '#/math/add/' + range),
+        pillBtn('sub', '减法', sub, '#/math/sub/' + range),
+        pillBtn('decomp', '分解组合', sub, '#/math/decomp/' + range)
       ]),
-      el('div', { class: 'selector' }, [
-        rangeBtn(10, range), rangeBtn(20, range)
+      el('div', { class: 'tabs-pill ghost', style: { marginTop: '-4px' } }, [
+        pillBtn(10, '10 以内', range, '#/math/' + sub + '/10'),
+        pillBtn(20, '20 以内', range, '#/math/' + sub + '/20')
       ]),
       el('div', { id: 'mathBox' })
     ]);
-    function btn(key, name, cur) {
-      return el('button', { class: key === cur ? 'active' : '', onclick: () => location.hash = '#/math/' + key + '/' + range }, [name]);
-    }
-    function rangeBtn(n, cur) {
-      return el('button', { class: n === cur ? 'active' : '', onclick: () => location.hash = '#/math/' + sub + '/' + n }, [`${n} 以内`]);
-    }
     setTimeout(() => {
       if (sub === 'add') $('#mathBox').appendChild(mathQuiz('add', range));
       else if (sub === 'sub') $('#mathBox').appendChild(mathQuiz('sub', range));
@@ -739,18 +739,20 @@
             if (!State.todayDone[h.id]) {
               if (completeTask(h.id, h.reward, h.name)) {
                 card.classList.add('done');
-                card.querySelector('.h-check-btn').classList.add('checked');
-                card.querySelector('.h-check-btn').textContent = '已完成';
+                const btn = card.querySelector('.h-check-btn');
+                btn.classList.add('checked');
+                btn.textContent = '已打卡';
               }
             } else {
               State.todayDone[h.id] = false; save();
               card.classList.remove('done');
-              card.querySelector('.h-check-btn').classList.remove('checked');
-              card.querySelector('.h-check-btn').textContent = '打卡';
+              const btn = card.querySelector('.h-check-btn');
+              btn.classList.remove('checked');
+              btn.textContent = '打卡';
               toast('已取消打卡');
             }
           }
-        }, [done ? '已完成' : '打卡'])
+        }, [done ? '已打卡' : '打卡'])
       ]);
       list.appendChild(card);
     });
@@ -837,9 +839,9 @@
     ]));
     // 狗狗展示台
     root.appendChild(renderDog());
-    root.appendChild(el('div', { class: 'shop-tabs' }, [
-      el('button', { class: tab === 'feed' ? 'active' : '', onclick: () => location.hash = '#/rewards/feed' }, ['🍖 喂食']),
-      el('button', { class: tab === 'dress' ? 'active' : '', onclick: () => location.hash = '#/rewards/dress' }, ['👕 打扮'])
+    root.appendChild(el('div', { class: 'tabs-pill ghost' }, [
+      pillBtn('feed', '🍖 喂食', tab, '#/rewards/feed'),
+      pillBtn('dress', '👕 打扮', tab, '#/rewards/dress')
     ]));
     const grid = el('div', { class: 'shop-grid' });
     (tab === 'feed' ? D.SHOP.food : D.SHOP.clothes).forEach(item => {
