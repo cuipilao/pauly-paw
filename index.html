@@ -71,36 +71,6 @@
     <div class="drawer-foot">v1.0 · 家长模式请在设置中开启</div>
   </aside>
 
-  <!-- 弹层：家长验证 -->
-  <div class="modal-mask" id="parentMask" hidden>
-    <div class="modal small">
-      <div class="modal-title">🔒 家长模式</div>
-      <div class="modal-desc">这是家长操作，请输入 4 位数字密码（首次默认 <b>0000</b>，可点底部“忘记密码”恢复）</div>
-      <input type="text" inputmode="numeric" pattern="\d*" maxlength="4" id="parentPwd" class="input" placeholder="请输入 4 位数字" autocomplete="off" />
-      <div class="modal-actions">
-        <button class="btn ghost" id="parentReset">忘记密码</button>
-        <button class="btn outline" id="parentCancel">取消</button>
-        <button class="btn primary" id="parentOk">确认</button>
-      </div>
-      <div class="modal-tip">小提示：长按顶部标题 3 秒也可直接解锁</div>
-    </div>
-  </div>
-
-  <!-- 弹层：通用对话框 -->
-  <div class="modal-mask" id="dlgMask" hidden>
-    <div class="modal">
-      <div class="modal-title" id="dlgTitle">提示</div>
-      <div class="modal-desc" id="dlgDesc"></div>
-      <div class="dlg-input-wrap" id="dlgInputWrap" hidden>
-        <input type="text" class="input" id="dlgInput" />
-      </div>
-      <div class="modal-actions">
-        <button class="btn ghost" id="dlgCancel">取消</button>
-        <button class="btn primary" id="dlgOk">确定</button>
-      </div>
-    </div>
-  </div>
-
   <!-- 弹层：吐司 -->
   <div id="toast" class="toast" hidden></div>
 </div>

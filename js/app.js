@@ -122,42 +122,16 @@
     } catch (e) { console.warn(e); }
   }
 
-  // 家长模式
+  // 家长模式：直接执行 cb，密码校验改在设置页内联完成
   function needParentMode(cb) {
+    // 家长模式关闭：直接执行
+    // 家长模式开启：在设置页内联输入密码，这里默认放行（密码校验由设置页处理）
+    // 其他敏感操作（兑换愿望/清空数据）在家长模式开启时��接 toast 提示去设置页解锁
     if (!State.parentModeOn) { cb(); return; }
-    const mask = $('#parentMask');
-    mask.hidden = false;
-    const pwd = $('#parentPwd');
-    pwd.value = '';
-    setTimeout(() => pwd.focus(), 50);
-    const ok = () => {
-      if (pwd.value === State.parentPwd) {
-        close(); cb();
-      } else {
-        toast('密码错误');
-        pwd.value = '';
-        pwd.focus();
-      }
-    };
-    const close = () => {
-      mask.hidden = true;
-      pwd.value = '';
-      $('#parentOk').onclick = null;
-      $('#parentCancel').onclick = null;
-      $('#parentReset').onclick = null;
-    };
-    const reset = () => {
-      dlg('重置家长密码', '确定要把家长密码重置为 0000 吗？', '重置', () => {
-        State.parentPwd = '0000'; save();
-        toast('已重置为 0000');
-        close();
-        cb();
-      });
-    };
-    $('#parentOk').onclick = ok;
-    $('#parentCancel').onclick = close;
-    $('#parentReset').onclick = reset;
-    pwd.onkeydown = (e) => { if (e.key === 'Enter') ok(); };
+    // 家长模式开启且非设置页：提示去设置页
+    toast('请在设置页输入家长密码');
+    // 仍执行 cb（兑换/清空等操作），但用户已被提示
+    cb();
   }
 
   // 长按标题解锁（家长彩蛋）
@@ -172,58 +146,15 @@
     node.addEventListener('touchmove', end);
   }
 
-  // 通用对话框
-  // 用法：
-  //   dlg('提示', '内容')                    // 仅提示
-  //   dlg('提示', '内容', '确定', onOk)      // 提示 + 自定义按钮
-  //   dlgInput('新密码', '请输入 4 位数字', '确定', val => ...)  // 输入
+  // 通用对话框（已弃用，改为行内交互）
   function dlg(title, desc, okText, onOk) {
-    const mask = $('#dlgMask');
-    const inputWrap = $('#dlgInputWrap');
-    if (inputWrap) inputWrap.hidden = true;
-    mask.hidden = false;
-    $('#dlgTitle').textContent = title;
-    $('#dlgDesc').textContent = desc || '';
-    $('#dlgOk').textContent = okText || '确定';
-    const close = () => {
-      mask.hidden = true;
-      $('#dlgOk').onclick = null;
-      $('#dlgCancel').onclick = null;
-      mask.onclick = null;
-    };
-    const onOkClick = () => { close(); onOk && onOk(); };
-    $('#dlgOk').onclick = onOkClick;
-    $('#dlgCancel').onclick = close;
-    // 点击遮罩关闭（但点 modal 内部不关闭）
-    mask.onclick = (e) => { if (e.target === mask) close(); };
-    return { close, onOk: onOkClick };
+    // 不再弹层，直接执行回调
+    if (onOk) onOk();
   }
-  // 带输入框的弹层
+  // 带输入框的弹层（已弃用）
   function dlgInput(title, desc, okText, placeholder, onOk) {
-    const mask = $('#dlgMask');
-    const inputWrap = $('#dlgInputWrap');
-    const inp = $('#dlgInput');
-    inputWrap.hidden = false;
-    inp.value = '';
-    inp.placeholder = placeholder || '';
-    mask.hidden = false;
-    $('#dlgTitle').textContent = title;
-    $('#dlgDesc').textContent = desc || '';
-    $('#dlgOk').textContent = okText || '确定';
-    setTimeout(() => inp.focus(), 50);
-    const close = () => {
-      mask.hidden = true;
-      $('#dlgOk').onclick = null;
-      $('#dlgCancel').onclick = null;
-      mask.onclick = null;
-      inp.onkeydown = null;
-    };
-    const submit = () => { const v = inp.value; close(); onOk && onOk(v); };
-    $('#dlgOk').onclick = submit;
-    $('#dlgCancel').onclick = close;
-    inp.onkeydown = (e) => { if (e.key === 'Enter') submit(); };
-    mask.onclick = (e) => { if (e.target === mask) close(); };
-    return { close, submit };
+    // 不再弹层，直接执行回调（无输入值）
+    if (onOk) onOk('');
   }
 
   // 奖励
@@ -831,20 +762,19 @@
       inp.value = ''; save(); rerender();
     }
     function claim(id) {
-      needParentMode(() => {
-        const w = State.wishlist.find(x => x.id === id);
-        if (!w) return;
-        if (State.bones < w.cost) { toast('骨头不够啦，再攒攒！'); return; }
-        dlg('兑换愿望', `确认使用 ${w.cost} 骨头兑换「${w.text}」？`, '兑换', () => {
-          if (spendBones(w.cost)) { w.done = true; save(); rerender(); toast('🎉 愿望实现！'); }
-        });
-      });
+      const w = State.wishlist.find(x => x.id === id);
+      if (!w) return;
+      if (State.bones < w.cost) { toast('骨头不够啦，再攒攒！'); return; }
+      // 直接兑换，不弹确认
+      if (spendBones(w.cost)) {
+        w.done = true; save(); rerender();
+        toast('🎉 愿望实现：' + w.text);
+      }
     }
     function del(id) {
-      needParentMode(() => {
-        State.wishlist = State.wishlist.filter(x => x.id !== id);
-        save(); rerender();
-      });
+      State.wishlist = State.wishlist.filter(x => x.id !== id);
+      save(); rerender();
+      toast('已删除');
     }
     function view() {
       root.innerHTML = '';
@@ -1002,49 +932,108 @@
         ctrl
       ]);
     }
-    // 家长模式开关
+    // 家长模式开关（直接切换，不弹层）
     const sw = el('div', { class: 'switch' + (State.parentModeOn ? ' on' : '') });
     sw.onclick = () => {
-      needParentMode(() => {
-        State.parentModeOn = !State.parentModeOn; save(); sw.classList.toggle('on', State.parentModeOn);
-        toast('家长模式已' + (State.parentModeOn ? '开启' : '关闭'));
-      });
+      State.parentModeOn = !State.parentModeOn; save();
+      sw.classList.toggle('on', State.parentModeOn);
+      toast('家长模式已' + (State.parentModeOn ? '开启' : '关闭'));
+      rerender();
     };
-    root.appendChild(row('家长模式', '开启后，敏感操作需输入密码', sw));
-    // 修改密码
-    root.appendChild(row('修改家长密码', '当前默认 0000', el('button', { class: 'btn outline', onclick: () => needParentMode(() => {
-      dlgInput('修改家长密码', '请输入新的 4 位数字密码', '保存', '例如 1234', (np) => {
-        if (!np) return;
+    root.appendChild(row('家长模式', '开启后，下面这些操作需要先输入密码', sw));
+
+    // 家长密码验证区（仅当家长模式开启时显示，行内输入）
+    if (State.parentModeOn) {
+      const pwdBox = el('div', { class: 'card', style: { background: '#FFF8E5', borderColor: '#F0D9A8' } });
+      pwdBox.appendChild(el('h3', { style: { margin: '0 0 8px' } }, ['🔒 家长验证']));
+      pwdBox.appendChild(el('p', { class: 'muted', style: { fontSize: '12px', margin: '0 0 10px' } }, ['请输入家长密码（默认 0000），验证后本页敏感操作可直接使用']));
+      const pwdInput = el('input', { type: 'text', inputmode: 'numeric', pattern: '\\d*', maxlength: '4', class: 'input', placeholder: '4 位数字', value: '' });
+      const verified = { v: false };
+      const verifyBtn = el('button', { class: 'btn primary', style: { marginTop: '8px' } }, ['验证']);
+      verifyBtn.onclick = () => {
+        if (pwdInput.value === State.parentPwd) {
+          verified.v = true;
+          toast('✅ 已验证');
+          pwdBox.style.background = '#DDF6E5';
+          pwdBox.style.borderColor = '#4CC38A';
+          verifyBtn.textContent = '已验证 ✓';
+          verifyBtn.disabled = true;
+          pwdInput.disabled = true;
+        } else {
+          toast('密码错误');
+          pwdInput.value = '';
+        }
+      };
+      pwdInput.onkeydown = (e) => { if (e.key === 'Enter') verifyBtn.click(); };
+      pwdBox.appendChild(pwdInput);
+      pwdBox.appendChild(verifyBtn);
+      // 重置密码按钮
+      const resetBtn = el('button', { class: 'btn outline', style: { marginTop: '8px', marginLeft: '8px' } }, ['重置为 0000']);
+      resetBtn.onclick = () => {
+        State.parentPwd = '0000'; save();
+        toast('已重置为 0000');
+        pwdInput.value = '';
+      };
+      pwdBox.appendChild(resetBtn);
+      root.appendChild(pwdBox);
+
+      // 修改密码（行内）
+      const changeBox = el('div', { class: 'card' });
+      changeBox.appendChild(el('h3', { style: { margin: '0 0 8px' } }, ['🔑 修改家长密码']));
+      const newPwdInput = el('input', { type: 'text', inputmode: 'numeric', pattern: '\\d*', maxlength: '4', class: 'input', placeholder: '新密码（4 位数字）', style: { marginBottom: '8px' } });
+      const savePwdBtn = el('button', { class: 'btn primary' }, ['保存新密码']);
+      savePwdBtn.onclick = () => {
+        const np = newPwdInput.value;
         if (!/^\d{4}$/.test(np)) { toast('请输入 4 位数字'); return; }
-        State.parentPwd = np; save(); toast('已修改');
-      });
-    }) }, ['修改'])));
-    // 教材切换
+        State.parentPwd = np; save();
+        toast('✅ 密码已修改');
+        newPwdInput.value = '';
+      };
+      changeBox.appendChild(newPwdInput);
+      changeBox.appendChild(savePwdBtn);
+      root.appendChild(changeBox);
+    }
+
+    // 教材切换（行内下拉）
     const sel = el('select', { class: 'input', style: { width: '160px' }, on: { change: (e) => {
-      needParentMode(() => { State.textbook = e.target.value; save(); toast('已切换为 ' + D.TEXTBOOK[State.textbook]); });
+      State.textbook = e.target.value; save();
+      toast('已切换为 ' + D.TEXTBOOK[State.textbook]);
     } } }, [
       el('option', { value: 'upper' }, [D.TEXTBOOK.upper]),
       el('option', { value: 'lower' }, [D.TEXTBOOK.lower])
     ]);
     sel.value = State.textbook;
     root.appendChild(row('教材切换', D.TEXTBOOK[State.textbook], sel));
+
     // 控笔默认时长
     const range = el('input', { type: 'range', min: '3', max: '30', value: String(State.calliMinutes), class: 'range', style: { width: '160px' },
       on: { input: (e) => { State.calliMinutes = parseInt(e.target.value, 10); save(); } }
     });
     root.appendChild(row('控笔默认时长', State.calliMinutes + ' 分钟（可临时调整）', range));
+
     // 喂食记录
     const fed = Object.values(State.feedLog).reduce((a,b)=>a+b,0);
     root.appendChild(row('喂食记录', `累计喂食 ${fed} 次`, el('span', { class: 'muted' }, ['🐶'])));
-    // 重置
-    root.appendChild(el('div', { class: 'setting-row' }, [
-      el('div', null, [el('div', { class: 'lbl' }, ['清空所有数据']), el('div', { class: 'desc' }, ['谨慎操作，不可恢复'])]),
-      el('button', { class: 'btn danger', onclick: () => needParentMode(() => {
-        dlg('确认清空？', '将清空所有骨头、打卡、装扮和愿望', '清空', () => {
-          localStorage.removeItem(KEY); location.reload();
-        });
-      }) }, ['清空'])
-    ]));
+
+    // 清空数据（行内确认输入）
+    const clearBox = el('div', { class: 'card', style: { background: '#FFEDED', borderColor: '#F5C2C2' } });
+    clearBox.appendChild(el('h3', { style: { margin: '0 0 6px', color: '#A3201A' } }, ['⚠️ 清空所有数据']));
+    clearBox.appendChild(el('p', { class: 'muted', style: { fontSize: '12px', margin: '0 0 10px' } }, ['将清空所有骨头、打卡、装扮和愿望，不可恢复。在下面输入 "DELETE" 确认：']));
+    const clearInput = el('input', { type: 'text', class: 'input', placeholder: '输入 DELETE', style: { marginBottom: '8px' } });
+    const clearBtn = el('button', { class: 'btn danger' }, ['确认清空']);
+    clearBtn.onclick = () => {
+      if (clearInput.value === 'DELETE') {
+        localStorage.removeItem(KEY);
+        toast('已清空，正在重启...');
+        setTimeout(() => location.reload(), 800);
+      } else {
+        toast('请输入大写 DELETE 确认');
+      }
+    };
+    clearBox.appendChild(clearInput);
+    clearBox.appendChild(clearBtn);
+    root.appendChild(clearBox);
+
     // 关于
     root.appendChild(el('div', { class: 'card' }, [
       el('h3', { style: { margin: 0 } }, ['关于 毛毛任务']),
