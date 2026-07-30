@@ -352,31 +352,34 @@ button, .sb-nav li, .task-item, .word-tile, .opt, .shop-item, .switch, .icon-btn
 /* ========== 语文/数学 题卡 ========== */
 .quiz-card {
   background: var(--paper); border-radius: var(--radius);
-  padding: 14px; box-shadow: var(--shadow);
+  padding: 18px; box-shadow: var(--shadow);
   border: 1px solid #FCEBD3;
 }
-.quiz-card .q-title { font-size: 15px; font-weight: 800; margin-bottom: 8px; }
+.quiz-card .q-title { font-size: 38px; font-weight: 800; margin: 16px 0 18px; text-align: center; letter-spacing: 2px; }
 .quiz-card .q-image {
   width: 100%; aspect-ratio: 16/10; background: #FFF6E5; border-radius: 12px;
   display: flex; align-items: center; justify-content: center; font-size: 70px;
   margin-bottom: 10px; border: 1px dashed #F0D9A8;
 }
-.quiz-card .options { display: grid; grid-template-columns: 1fr 1fr; gap: 8px; }
+.quiz-card .options { display: grid; grid-template-columns: 1fr 1fr; gap: 12px; }
 .quiz-card .opt {
-  padding: 12px; border-radius: 12px; border: 1px solid var(--line);
-  background: #FFFCF6; font-weight: 700; font-size: 15px; text-align: center;
-  cursor: pointer;
+  padding: 22px 12px; border-radius: 16px; border: 2px solid var(--line);
+  background: #FFFCF6; font-weight: 800; font-size: 32px; text-align: center;
+  cursor: pointer; transition: .15s;
+  min-height: 70px;
+  display: flex; align-items: center; justify-content: center;
 }
+.quiz-card .opt:active { background: #FFE6E2; transform: scale(.97); }
 .quiz-card .opt.correct { background: #DDF6E5; border-color: #4CC38A; color: #1F7A4A; }
 .quiz-card .opt.wrong { background: #FFE2DA; border-color: #E94B3C; color: #A3201A; }
 .quiz-card .opt:disabled { cursor: not-allowed; opacity: .9; }
 
 .qa-bar { display: flex; align-items: center; justify-content: space-between; margin: 6px 2px; }
-.qa-bar .idx { font-weight: 800; color: var(--ink-2); font-size: 12px; }
+.qa-bar .idx { font-weight: 800; color: var(--ink-2); font-size: 13px; }
 .qa-bar .speak {
   background: #FFEDC9; border: 1px solid #F2D08A; color: #8A5A14;
-  padding: 5px 9px; border-radius: 999px; font-weight: 700; cursor: pointer;
-  font-size: 12px;
+  padding: 6px 12px; border-radius: 999px; font-weight: 700; cursor: pointer;
+  font-size: 13px;
 }
 
 /* 识字卡片 */
@@ -446,8 +449,8 @@ button, .sb-nav li, .task-item, .word-tile, .opt, .shop-item, .switch, .icon-btn
   box-shadow: 0 3px 8px rgba(233,75,60,.3);
 }
 .tabs-pill.ghost button.active {
-  background: linear-gradient(135deg, #4C6BFF, #2D8CFF);
-  box-shadow: 0 3px 8px rgba(45,140,255,.3);
+  background: linear-gradient(135deg, #E94B3C, #C8341E);
+  box-shadow: 0 3px 8px rgba(233,75,60,.3);
 }
 
 /* 习惯 - 卡片式布局 */
