@@ -1062,6 +1062,34 @@
     };
     root.appendChild(row('家长模式', '开启后，下面这些操作需要先输入密码', sw));
 
+    // ===== 主题切换 =====
+    const themeCard = el('div', { class: 'card' });
+    themeCard.appendChild(el('h3', { style: { margin: '0 0 8px' } }, ['🎨 主题切换']));
+    themeCard.appendChild(el('p', { class: 'muted', style: { fontSize: '12px', margin: '0 0 12px' } }, ['选择喜欢的主题皮肤，整站颜色随之改变']));
+    const themeGrid = el('div', { style: { display: 'grid', gridTemplateColumns: '1fr 1fr', gap: '10px' } });
+    const themes = [
+      { id: 'paw',   name: '汪汪队', desc: '暖橙 + Marshall', preview: ['#FFE0B2','#FFD194','#E94B3C','#F6B82E'], icon: '🐶' },
+      { id: 'ultra', name: '奥特曼', desc: '科幻蓝 + 雷电',  preview: ['#2541B2','#3B5BDB','#4263EB','#FFD43B'], icon: '⚡' }
+    ];
+    themes.forEach(t => {
+      const active = (State.theme || 'paw') === t.id;
+      const card = el('div', {
+        class: 'theme-card' + (active ? ' active' : ''),
+        onclick: () => {
+          applyTheme(t.id); save(); rerender();
+          toast('已切换到：' + t.name);
+        }
+      }, [
+        el('div', { class: 'theme-icon' }, [t.icon]),
+        el('div', { class: 'theme-name' }, [t.name]),
+        el('div', { class: 'theme-desc' }, [t.desc]),
+        el('div', { class: 'theme-preview' }, t.preview.map(c => el('div', { style: { background: c } })))
+      ]);
+      themeGrid.appendChild(card);
+    });
+    themeCard.appendChild(themeGrid);
+    root.appendChild(themeCard);
+
     // 家长密码验证区（仅当家长模式开启时显示，行内输入）
     if (State.parentModeOn) {
       const pwdBox = el('div', { class: 'card', style: { background: '#FFF8E5', borderColor: '#F0D9A8' } });
@@ -1182,6 +1210,8 @@
   // -------- 启动 --------
   function init() {
     load();
+    // 应用主题
+    applyTheme(State.theme || 'paw');
     // 侧边栏导航
     document.querySelectorAll('#sbNav li').forEach(li => {
       li.onclick = () => go(li.dataset.route);
@@ -1196,6 +1226,11 @@
     window.addEventListener('hashchange', rerender);
     if (!location.hash) location.hash = '#/home';
     rerender();
+  }
+  function applyTheme(name) {
+    document.body.className = document.body.className.replace(/theme-\w+/g, '').trim();
+    document.body.classList.add('theme-' + name);
+    State.theme = name;
   }
   document.addEventListener('DOMContentLoaded', init);
 })();
