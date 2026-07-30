@@ -721,32 +721,46 @@
   // ====== 习惯 ======
   Pages.habit = function () {
     setTopbar('习惯打卡', '🪥');
-    const list = el('div', { class: 'card task-list' });
-    D.HABITS.forEach(h => {
+    // 每个习惯对应一个主题色
+    const colors = ['red', 'blue', 'green'];
+    const list = el('div', { class: 'habit-cards' });
+    D.HABITS.forEach((h, i) => {
       const done = !!State.todayDone[h.id];
-      const node = el('label', { class: 'task-item' + (done ? ' done' : '') }, [
-        el('input', { type: 'checkbox', on: { change: (e) => {
-          if (e.target.checked) {
-            if (completeTask(h.id, h.reward, h.name)) e.target.parentNode.classList.add('done');
-          } else {
-            State.todayDone[h.id] = false; save();
-            e.target.parentNode.classList.remove('done');
-          }
-        } } }),
-        el('div', { class: 'habit-ico' }, [h.ico]),
-        el('div', null, [
-          el('div', { class: 't-title' }, [h.name]),
-          el('div', { class: 't-meta' }, [h.desc])
+      const colorCls = colors[i] || 'yellow';
+      const card = el('div', { class: 'h-card ' + colorCls + (done ? ' done' : '') }, [
+        el('div', { class: 'h-ico-block' }, [h.ico]),
+        el('div', { class: 'h-mid' }, [
+          el('div', { class: 'h-title' }, [h.name]),
+          el('div', { class: 'h-desc' }, [h.desc + ' · +' + h.reward + ' 积分'])
         ]),
-        el('div', { class: 'reward' }, ['+'+h.reward+' 🦴'])
+        el('button', {
+          class: 'h-check-btn' + (done ? ' checked' : ''),
+          onclick: () => {
+            if (!State.todayDone[h.id]) {
+              if (completeTask(h.id, h.reward, h.name)) {
+                card.classList.add('done');
+                card.querySelector('.h-check-btn').classList.add('checked');
+                card.querySelector('.h-check-btn').textContent = '已完成';
+              }
+            } else {
+              State.todayDone[h.id] = false; save();
+              card.classList.remove('done');
+              card.querySelector('.h-check-btn').classList.remove('checked');
+              card.querySelector('.h-check-btn').textContent = '打卡';
+              toast('已取消打卡');
+            }
+          }
+        }, [done ? '已完成' : '打卡'])
       ]);
-      if (done) node.querySelector('input').checked = true;
-      list.appendChild(node);
+      list.appendChild(card);
     });
     const root = el('div', null, [
-      el('div', { class: 'card' }, [
-        el('h3', { style: { margin: 0 } }, ['每天 3 件小事']),
-        el('p', { class: 'muted' }, ['坚持 21 天，养成好习惯！毛毛在为你加油 🐶'])
+      el('div', { class: 'card habit-hero' }, [
+        el('div', { class: 'hh-ico' }, ['🐶']),
+        el('div', null, [
+          el('h3', { style: { margin: 0 } }, ['每天 3 件小事']),
+          el('p', { class: 'muted', style: { margin: '4px 0 0' } }, ['坚持 21 天养成好习惯，毛毛为你加油！'])
+        ])
       ]),
       list
     ]);

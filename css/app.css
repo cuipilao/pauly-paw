@@ -417,12 +417,57 @@ button, .sb-nav li, .task-item, .word-tile, .opt, .shop-item, .switch, .icon-btn
   background: var(--primary); color: #fff; border-color: var(--primary);
 }
 
-/* 习惯 */
-.habit-item { display: flex; align-items: center; gap: 8px; }
-.habit-ico {
-  width: 38px; height: 38px; border-radius: 10px; background: #FFE6E2;
-  display: flex; align-items: center; justify-content: center; font-size: 20px;
+/* 习惯 - 卡片式布局 */
+.habit-hero {
+  display: flex; align-items: center; gap: 12px;
+  background: linear-gradient(135deg, #FFF5D9 0%, #FFE3A0 100%);
+  border: 2px solid #F4D78A;
+}
+.habit-hero .hh-ico {
+  width: 52px; height: 52px; border-radius: 14px;
+  background: #fff; display: flex; align-items: center; justify-content: center;
+  font-size: 28px; flex-shrink: 0; box-shadow: 0 3px 8px rgba(0,0,0,.1);
+}
+.habit-cards { margin-bottom: 10px; }
+.h-card {
+  display: flex; align-items: center; gap: 12px;
+  padding: 12px; border-radius: var(--radius);
+  background: var(--paper); border: 1px solid #FCEBD3;
+  box-shadow: var(--shadow); margin-bottom: 10px;
+  transition: .2s;
+}
+.h-card.done { opacity: .6; background: #F4F0E6; }
+.h-card.done .h-title { text-decoration: line-through; }
+
+/* 左侧大图标块 */
+.h-ico-block {
+  width: 60px; height: 60px; border-radius: 16px;
+  display: flex; align-items: center; justify-content: center;
+  font-size: 32px; flex-shrink: 0;
+}
+.h-card.red .h-ico-block { background: linear-gradient(135deg, #FFE2DA, #FFC3B4); }
+.h-card.blue .h-ico-block { background: linear-gradient(135deg, #DCEBFF, #B7D6FF); }
+.h-card.green .h-ico-block { background: linear-gradient(135deg, #DDF6E5, #B3EBC6); }
+.h-card.yellow .h-ico-block { background: linear-gradient(135deg, #FFF1C7, #FFD89A); }
+
+/* 中间标题描述 */
+.h-mid { flex: 1; min-width: 0; }
+.h-title { font-weight: 800; font-size: 15px; }
+.h-desc { font-size: 11px; color: var(--muted); margin-top: 3px; }
+
+/* 右侧打卡按钮 */
+.h-check-btn {
   flex-shrink: 0;
+  padding: 8px 16px; border-radius: 999px; border: none;
+  background: linear-gradient(135deg, #E94B3C, #C8341E);
+  color: #fff; font-size: 13px; font-weight: 800;
+  cursor: pointer; touch-action: manipulation;
+  box-shadow: 0 4px 8px rgba(233,75,60,.3);
+  transition: .2s;
+}
+.h-check-btn:active { transform: translateY(1px); }
+.h-check-btn.checked {
+  background: #4CC38A; box-shadow: 0 4px 8px rgba(76,195,138,.3);
 }
 
 /* 愿望 */
