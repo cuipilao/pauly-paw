@@ -284,12 +284,12 @@
   }
   function dailyItems() {
     return [
-      { key: 'pinpin', title: '拼音练习', meta: '10 分钟', reward: 2 },
-      { key: 'shizi', title: '识字 5 个', meta: '10 分钟', reward: 2 },
-      { key: 'kanTu', title: '看图说话', meta: '5 分钟', reward: 1 },
-      { key: 'math', title: '数学 10 题', meta: '10 分钟', reward: 2 },
-      { key: 'calli', title: `控笔 ${State.calliMinutes} 分钟`, meta: '毛毛陪你一起', reward: 1 },
-      ...D.HABITS.map(h => ({ key: h.id, title: h.name, meta: h.desc, reward: h.reward }))
+      { key: 'pinpin', title: '拼音练习', meta: '10 分钟', reward: 2, ico: '🔤' },
+      { key: 'shizi', title: '识字 5 个', meta: '10 分钟', reward: 2, ico: '📖' },
+      { key: 'kanTu', title: '看图说话', meta: '5 分钟', reward: 1, ico: '🖼️' },
+      { key: 'math', title: '数学 10 题', meta: '10 分钟', reward: 2, ico: '➕' },
+      { key: 'calli', title: `控笔 ${State.calliMinutes} 分钟`, meta: '毛毛陪你一起', reward: 1, ico: '✏️' },
+      ...D.HABITS.map(h => ({ key: h.id, title: h.name, meta: h.desc, reward: h.reward, ico: h.ico }))
     ];
   }
   function renderTodayTasks() {
@@ -335,33 +335,58 @@
   // ====== 任务汇总页 ======
   Pages.tasks = function () {
     setTopbar('今日任务', '📋');
+    const list = dailyItems();
+    const done = Object.keys(State.todayDone).length;
+    const pct = Math.min(100, Math.round(done / list.length * 100));
     const root = el('div', null, [
       el('div', { class: 'card' }, [
         el('div', { class: 'row-between' }, [
           el('h3', { style: { margin: 0 } }, ['今日清单']),
           el('div', { class: 'sub' }, [todayProgress()])
         ]),
-        el('div', { class: 'progress' }, [el('i', { id: 'progBar' })]),
-        el('div', { class: 'divider' }),
-        el('div', { class: 'task-list' }, renderTodayTasks())
+        el('div', { class: 'progress' }, [el('i', { id: 'progBar', style: { width: pct + '%' } })])
       ]),
+      el('div', { class: 'task-grid' }, list.map(taskEntry)),
       el('div', { class: 'section-title' }, [el('h3', null, ['快速进入'])]),
       el('div', { class: 'grid-2' }, [
         entry('red', '📖', '语文', '拼音·识字·看图', 'chinese'),
-        entry('blue', '➕', '数学', '加减·分解', 'math'),
+        entry('blue', '➕', '数学', '加减混合', 'math'),
         entry('yellow', '✍️', '书法', '控笔训练', 'calligraphy'),
         entry('green', '🪥', '习惯', '唇肌·洗鼻·刷牙', 'habit'),
         entry('pink', '🌟', '愿望清单', '列愿望与兑换', 'wishlist'),
         entry('purple', '🦴', '奖励', '骨头商店', 'rewards')
       ])
     ]);
-    setTimeout(() => {
-      const list = dailyItems();
-      const done = Object.keys(State.todayDone).length;
-      const pct = Math.min(100, Math.round(done / list.length * 100));
-      const bar = $('#progBar'); if (bar) bar.style.width = pct + '%';
-    }, 0);
     return root;
+  };
+  // 任务卡片：彩色卡片 + 完成态
+  function taskEntry(it) {
+    const done = !!State.todayDone[it.key];
+    const colors = ['red','blue','yellow','green','pink','purple','yellow','green'];
+    const idx = dailyItems().findIndex(x => x.key === it.key);
+    const colorCls = colors[idx % colors.length] || 'red';
+    const node = el('div', { class: 'task-entry ' + colorCls + (done ? ' done' : ''), 'data-key': it.key }, [
+      el('div', { class: 'te-ico' }, [it.ico || '📌']),
+      el('div', { class: 'te-name' }, [it.title]),
+      el('div', { class: 'te-meta' }, [it.meta]),
+      el('button', { class: 'te-btn' + (done ? ' done' : ''), onclick: (e) => {
+        e.stopPropagation();
+        if (!State.todayDone[it.key]) {
+          if (completeTask(it.key, it.reward, it.title)) {
+            node.classList.add('done');
+            e.target.classList.add('done');
+            e.target.textContent = '已打卡 ✓';
+          }
+        } else {
+          State.todayDone[it.key] = false; save();
+          node.classList.remove('done');
+          e.target.classList.remove('done');
+          e.target.textContent = '打卡';
+          rerender();
+        }
+      } }, [done ? '已打卡 ✓' : '+' + it.reward + ' 打卡'])
+    ]);
+    return node;
   };
   function entry(klass, ico, name, sub, route) {
     return el('div', { class: 'entry ' + klass, onclick: () => go(route) }, [

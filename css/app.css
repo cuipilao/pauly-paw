@@ -330,6 +330,63 @@ button, .sb-nav li, .task-item, .word-tile, .opt, .shop-item, .switch, .icon-btn
 }
 .big-cta:active { transform: translateY(1px); }
 
+/* 任务卡片网格 */
+.task-grid {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 10px;
+  margin-bottom: 14px;
+}
+.task-entry {
+  position: relative;
+  background: var(--paper);
+  border: 1px solid #FCEBD3;
+  border-radius: var(--radius);
+  padding: 12px;
+  box-shadow: var(--shadow);
+  min-height: 130px;
+  display: flex; flex-direction: column;
+  cursor: pointer;
+  transition: .2s;
+  overflow: hidden;
+}
+.task-entry::before {
+  content: ''; position: absolute;
+  left: 0; top: 12px; bottom: 12px;
+  width: 4px; border-radius: 0 4px 4px 0;
+}
+.task-entry.red::before    { background: linear-gradient(180deg, #E94B3C, #C8341E); }
+.task-entry.blue::before   { background: linear-gradient(180deg, #4C6BFF, #2D8CFF); }
+.task-entry.yellow::before { background: linear-gradient(180deg, #F6B82E, #E89C00); }
+.task-entry.green::before  { background: linear-gradient(180deg, #4CC38A, #2A9F66); }
+.task-entry.pink::before   { background: linear-gradient(180deg, #FF7AA2, #E55A85); }
+.task-entry.purple::before { background: linear-gradient(180deg, #B388F5, #8C5FE0); }
+
+.task-entry.red    { background: linear-gradient(135deg, #FFE2DA, #FFC3B4); }
+.task-entry.blue   { background: linear-gradient(135deg, #DCEBFF, #B7D6FF); }
+.task-entry.yellow { background: linear-gradient(135deg, #FFF1C7, #FFD89A); }
+.task-entry.green  { background: linear-gradient(135deg, #DDF6E5, #B3EBC6); }
+.task-entry.pink   { background: linear-gradient(135deg, #FFE0EC, #FFBED6); }
+.task-entry.purple { background: linear-gradient(135deg, #ECE2FF, #C9B6FF); }
+
+.task-entry.done { opacity: .55; filter: grayscale(.5); }
+.task-entry.done .te-name { text-decoration: line-through; }
+
+.task-entry .te-ico { font-size: 30px; margin-bottom: 6px; }
+.task-entry .te-name { font-size: 14px; font-weight: 800; margin-bottom: 2px; }
+.task-entry .te-meta { font-size: 11px; color: var(--ink-2); margin-bottom: 10px; flex: 1; }
+.task-entry .te-btn {
+  border: none; padding: 7px 10px; border-radius: 10px;
+  background: rgba(255,255,255,.85); color: var(--ink);
+  font-weight: 800; font-size: 12px; cursor: pointer;
+  text-align: center;
+  touch-action: manipulation;
+  box-shadow: 0 2px 4px rgba(0,0,0,.06);
+  transition: .15s;
+}
+.task-entry .te-btn:active { transform: scale(.96); }
+.task-entry .te-btn.done { background: #4CC38A; color: #fff; }
+
 /* ========== 通用入口 ========== */
 .grid-2 { display: grid; grid-template-columns: 1fr 1fr; gap: 8px; }
 .grid-3 { display: grid; grid-template-columns: 1fr 1fr 1fr; gap: 8px; }
