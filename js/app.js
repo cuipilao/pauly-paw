@@ -510,13 +510,13 @@
   // ====== 数学 ======
   Pages.math = function () {
     setTopbar('数学', '➕');
-    const sub = location.hash.split('/')[2] || 'add';
+    const sub = location.hash.split('/')[2] || 'mix';
     const range = parseInt(location.hash.split('/')[3] || '10', 10);
     const root = el('div', null, [
       el('div', { class: 'tabs-pill' }, [
+        pillBtn('mix', '加减混合', sub, '#/math/mix/' + range),
         pillBtn('add', '加法', sub, '#/math/add/' + range),
-        pillBtn('sub', '减法', sub, '#/math/sub/' + range),
-        pillBtn('decomp', '分解组合', sub, '#/math/decomp/' + range)
+        pillBtn('sub', '减法', sub, '#/math/sub/' + range)
       ]),
       el('div', { class: 'tabs-pill ghost', style: { marginTop: '-4px' } }, [
         pillBtn(10, '10 以内', range, '#/math/' + sub + '/10'),
@@ -525,14 +525,26 @@
       el('div', { id: 'mathBox' })
     ]);
     setTimeout(() => {
-      if (sub === 'add') $('#mathBox').appendChild(mathQuiz('add', range));
+      if (sub === 'mix') $('#mathBox').appendChild(mathQuiz('mix', range));
+      else if (sub === 'add') $('#mathBox').appendChild(mathQuiz('add', range));
       else if (sub === 'sub') $('#mathBox').appendChild(mathQuiz('sub', range));
-      else $('#mathBox').appendChild(mathQuiz('decomp', range));
+      else $('#mathBox').appendChild(mathQuiz('mix', range));
     }, 0);
     return root;
   };
   function mathQuiz(type, range) {
-    let list = type === 'decomp' ? D.buildDecomp(range) : D.buildArith(range).filter(x => x.type === type);
+    let list;
+    if (type === 'mix') {
+      // 加减混合：50% 加法，50% 减法
+      const adds = D.buildArith(range).filter(x => x.type === 'add');
+      const subs = D.buildArith(range).filter(x => x.type === 'sub');
+      const half = 5;
+      const pickedAdds = shuffle(adds).slice(0, half);
+      const pickedSubs = shuffle(subs).slice(0, half);
+      list = shuffle([...pickedAdds, ...pickedSubs]);
+    } else {
+      list = D.buildArith(range).filter(x => x.type === type);
+    }
     list = list.slice(0, 10);
     let idx = 0, score = 0;
     const wrap = el('div', { class: 'quiz-card' });
@@ -571,7 +583,12 @@
         const d = (Math.random() < .5 ? -1 : 1) * (Math.floor(Math.random()*3)+1);
         s.add(Math.max(0, ans + d));
       }
-      return [...s].sort(() => Math.random() - 0.5);
+      return [...s].sort(() => Math.random() - .5);
+    }
+    function shuffle(a) {
+      const b = a.slice();
+      for (let i = b.length-1; i>0; i--) { const j=Math.floor(Math.random()*(i+1)); [b[i],b[j]]=[b[j],b[i]];}
+      return b;
     }
     function finish() {
       wrap.innerHTML = '';
