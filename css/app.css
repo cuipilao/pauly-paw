@@ -118,11 +118,11 @@ button, .sb-nav li, .task-item, .word-tile, .opt, .shop-item, .switch, .icon-btn
   flex-direction: column;
   align-items: center;
   gap: 2px;
-  padding: 8px 4px;
+  padding: 10px 4px;
   margin-bottom: 4px;
   border-radius: 10px;
-  font-size: 10px;
-  font-weight: 700;
+  font-size: 12px;
+  font-weight: 800;
   color: #4A2A12;
   background: transparent;
   transition: all .15s;
@@ -133,10 +133,10 @@ button, .sb-nav li, .task-item, .word-tile, .opt, .shop-item, .switch, .icon-btn
   box-shadow: 0 3px 8px rgba(233,75,60,.25);
 }
 .sb-ico {
-  font-size: 22px;
+  font-size: 26px;
   line-height: 1;
 }
-.sb-lbl { font-size: 10px; }
+.sb-lbl { font-size: 12px; }
 
 .sb-foot {
   padding: 8px 4px;
@@ -689,9 +689,10 @@ button, .sb-nav li, .task-item, .word-tile, .opt, .shop-item, .switch, .icon-btn
 
 /* 小屏适配：iPhone SE 等 320-375 宽 */
 @media (max-width: 360px) {
-  :root { --sidebar-w: 68px; }
+  :root { --sidebar-w: 72px; }
   .sb-avatar, .sb-avatar-fallback { width: 44px; height: 44px; line-height: 38px; font-size: 18px; }
-  .sb-ico { font-size: 20px; }
+  .sb-ico { font-size: 23px; }
+  .sb-lbl { font-size: 11px; }
   .topbar-main { font-size: 14px; }
   .card { padding: 10px; }
 }

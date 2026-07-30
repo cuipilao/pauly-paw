@@ -381,10 +381,10 @@
           State.todayDone[it.key] = false; save();
           node.classList.remove('done');
           e.target.classList.remove('done');
-          e.target.textContent = '打卡';
+          e.target.textContent = '🦴 打卡';
           rerender();
         }
-      } }, [done ? '已打卡 ✓' : '+' + it.reward + ' 打卡'])
+      } }, [done ? '已打卡 ✓' : '🦴 打卡'])
     ]);
     return node;
   };
