@@ -47,6 +47,7 @@ button, .sb-nav li, .task-item, .word-tile, .opt, .shop-item, .switch, .icon-btn
   position: relative;
   width: 100vw;
   height: 100vh;
+  height: 100dvh;
   display: flex;
   flex-direction: row;
   padding-top: var(--safeTop);
@@ -198,8 +199,9 @@ button, .sb-nav li, .task-item, .word-tile, .opt, .shop-item, .switch, .icon-btn
   flex: 1;
   overflow-y: auto;
   -webkit-overflow-scrolling: touch;
-  padding: 10px 12px calc(20px + var(--safeBot));
+  padding: 10px 12px calc(40px + var(--safeBot));
   min-height: 0;
+  overscroll-behavior-y: contain;
 }
 .content::-webkit-scrollbar { display: none; }
 
