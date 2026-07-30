@@ -220,7 +220,7 @@
 
   // ====== 首页 ======
   Pages.home = function () {
-    setTopbar('首页 · 毛毛的家', '🏠');
+    setTopbar('首页 · 泽宝的家', '🏠');
     const root = el('div', null, [
       // 天气条（直接展示，不是卡片）
       el('div', { class: 'weather-bar' }, [
@@ -240,7 +240,7 @@
           el('div', { class: 'bc-num' }, [State.bones + ' 根 🦴']),
           el('div', { class: 'bc-tip' }, ['完成任务去喂毛毛、打扮它！'])
         ]),
-        el('div', { class: 'bc-momo' }, ['🐶'])
+        el('div', { class: 'bc-momo-img', style: { backgroundImage: "url('assets/img/marshall.png')" } })
       ]),
       // 今日任务
       el('div', { class: 'section-title' }, [

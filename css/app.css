@@ -266,13 +266,17 @@ button, .sb-nav li, .task-item, .word-tile, .opt, .shop-item, .switch, .icon-btn
 .bone-card .bc-label { font-size: 11px; color: #8A6A2A; }
 .bone-card .bc-num { font-size: 26px; font-weight: 800; color: #8A5A14; line-height: 1.1; }
 .bone-card .bc-tip { font-size: 11px; color: #8A6A2A; margin-top: 2px; }
-.bone-card .bc-momo {
+.bone-card .bc-momo-img {
   position: absolute;
-  right: -6px; bottom: -8px;
-  font-size: 70px;
-  opacity: .18;
-  transform: rotate(-12deg);
+  right: -4px; bottom: -6px;
+  width: 110px; height: 110px;
+  background-size: contain;
+  background-repeat: no-repeat;
+  background-position: right bottom;
+  opacity: .95;
   pointer-events: none;
+  filter: drop-shadow(0 4px 8px rgba(180, 80, 20, .15));
+  transform: rotate(-6deg);
 }
 
 /* ========== 任务列表 ========== */
