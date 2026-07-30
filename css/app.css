@@ -264,14 +264,17 @@ button, .sb-nav li, .task-item, .word-tile, .opt, .shop-item, .switch, .icon-btn
 .bone-card .bc-num { font-size: 24px; font-weight: 800; color: #8A5A14; line-height: 1.1; margin-top: 1px; }
 .bone-card .bc-tip { font-size: 11px; color: #8A6A2A; margin-top: 2px; }
 .bone-card .bc-momo-img {
+  display: none;  /* Marshall 图隐藏 */
+}
+.bone-card::after {
+  content: '🐾';
   position: absolute;
-  right: 8px; bottom: -2px;
-  width: 76px; height: 76px;
-  background: url('../img/marshall.png') no-repeat right bottom;
-  background-size: contain;
-  opacity: 1;
+  right: 10px; bottom: 8px;
+  font-size: 64px;
+  opacity: .14;
   pointer-events: none;
   z-index: 1;
+  transform: rotate(-10deg);
 }
 
 /* ========== 任务列表 ========== */
