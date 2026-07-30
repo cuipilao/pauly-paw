@@ -210,10 +210,7 @@
     if (icon) $('#topbarIcon').textContent = icon;
   }
   function highlight(route) {
-    document.querySelectorAll('#navList li').forEach(li => {
-      li.classList.toggle('active', li.dataset.route === route);
-    });
-    document.querySelectorAll('.tabbar .tab').forEach(li => {
+    document.querySelectorAll('#sbNav li').forEach(li => {
       li.classList.toggle('active', li.dataset.route === route);
     });
   }
@@ -225,32 +222,36 @@
   Pages.home = function () {
     setTopbar('首页 · 毛毛的家', '🏠');
     const root = el('div', null, [
-      // 天气 + 问候
-      el('div', { class: 'weather-card' }, [
-        el('div', { class: 'greet' }, greeting()),
-        el('div', { class: 'temp' }, '☀️ 26°'),
-        el('div', { class: 'city' }, '北京 · 适宜出行'),
-        el('div', { class: 'streak' }, '🔥 连续 ' + State.streak + ' 天'),
-        el('div', { class: 'ico' }, '🌤️')
+      // 天气条（直接展示，不是卡片）
+      el('div', { class: 'weather-bar' }, [
+        el('div', { class: 'w-ico' }, ['🌤️']),
+        el('div', { class: 'w-info' }, [
+          el('div', { class: 'w-greet' }, [greeting()]),
+          el('div', { class: 'w-temp' }, ['☀️ 26°']),
+          el('div', { class: 'w-city' }, ['北京 · 适宜出行'])
+        ]),
+        el('div', { class: 'w-streak' }, ['🔥 ' + State.streak + ' 天'])
       ]),
-      // 骨头罐子
-      el('div', { class: 'card bone-tank' }, [
-        el('div', { class: 'jar' }, '🦴'),
-        el('div', { class: 'info' }, [
-          el('div', { class: 'num' }, '骨头余额 ' + State.bones),
-          el('div', { class: 'label' }, '完成任务可获得更多骨头，去喂毛毛、打扮它吧！')
-        ])
+      // 骨头卡片（含毛毛形象）
+      el('div', { class: 'bone-card' }, [
+        el('div', { class: 'bc-jar' }),
+        el('div', { class: 'bc-info' }, [
+          el('div', { class: 'bc-label' }, ['骨头余额']),
+          el('div', { class: 'bc-num' }, [State.bones + ' 根 🦴']),
+          el('div', { class: 'bc-tip' }, ['完成任务去喂毛毛、打扮它！'])
+        ]),
+        el('div', { class: 'bc-momo' }, ['🐶'])
       ]),
       // 今日任务
       el('div', { class: 'section-title' }, [
         el('h3', null, ['📋 今日任务']),
-        el('div', { class: 'sub' }, todayProgress())
+        el('div', { class: 'sub' }, [todayProgress()])
       ]),
       el('div', { class: 'card task-list', id: 'taskList' }, renderTodayTasks()),
       // 里程碑
       el('div', { class: 'section-title' }, [
         el('h3', null, ['🏅 坚持徽章']),
-        el('div', { class: 'sub' }, '坚持解锁装扮哦')
+        el('div', { class: 'sub' }, ['坚持解锁装扮'])
       ]),
       el('div', { class: 'card' }, [el('div', { class: 'badges' }, renderBadges())]),
       // 跳到任务
@@ -1062,19 +1063,16 @@
   // -------- 启动 --------
   function init() {
     load();
-    // 抽屉
-    const drawer = $('#drawer'), mask = $('#drawerMask');
-    $('#menuBtn').onclick = () => { drawer.classList.add('open'); mask.classList.add('open'); };
-    mask.onclick = () => { drawer.classList.remove('open'); mask.classList.remove('open'); };
-    document.querySelectorAll('#navList li').forEach(li => {
-      li.onclick = () => { drawer.classList.remove('open'); mask.classList.remove('open'); go(li.dataset.route); };
-    });
-    // Tabbar
-    document.querySelectorAll('.tabbar .tab').forEach(li => {
+    // 侧边栏导航
+    document.querySelectorAll('#sbNav li').forEach(li => {
       li.onclick = () => go(li.dataset.route);
     });
-    // 长按头部解锁
-    bindLongPress($('.topbar-title'), () => needParentMode(() => { toast('家长模式已解锁'); }));
+    // 长按顶部标题解锁家长模式
+    const tb = document.querySelector('.topbar');
+    if (tb) bindLongPress(tb, () => {
+      State.parentModeOn = !State.parentModeOn; save();
+      toast('家长模式已' + (State.parentModeOn ? '开启' : '关闭'));
+    });
     // Hash 路由
     window.addEventListener('hashchange', rerender);
     if (!location.hash) location.hash = '#/home';

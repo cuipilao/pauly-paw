@@ -5,84 +5,66 @@
 <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no, viewport-fit=cover" />
 <meta name="apple-mobile-web-app-capable" content="yes" />
 <meta name="apple-mobile-web-app-status-bar-style" content="default" />
-<meta name="apple-mobile-web-app-title" content="毛毛任务" />
+<meta name="apple-mobile-web-app-title" content="泽宝小天地" />
 <meta name="theme-color" content="#FFD9A8" />
 <meta name="format-detection" content="telephone=no" />
-<title>毛毛任务 · 汪汪队学习桌</title>
-<link rel="apple-touch-icon" href="assets/icons/icon-180.png?v5" />
-<link rel="icon" href="assets/icons/icon-180.png?v5" />
-<link rel="stylesheet" href="css/app.css?v5" />
+<title>泽宝小天地 · 汪汪队学习桌</title>
+<link rel="apple-touch-icon" href="assets/icons/icon-180.png?v6" />
+<link rel="icon" href="assets/icons/icon-180.png?v6" />
+<link rel="stylesheet" href="css/app.css?v6" />
 </head>
 <body>
-<!-- 顶部状态栏占位 -->
 <div id="app">
-  <!-- 顶部条 -->
-  <header class="topbar">
-    <button class="icon-btn" id="menuBtn" aria-label="菜单">
-      <svg viewBox="0 0 24 24" width="22" height="22"><path fill="currentColor" d="M3 6h18v2H3zM3 11h18v2H3zM3 16h18v2H3z"/></svg>
-    </button>
-    <div class="topbar-title">
-      <div class="topbar-icon" id="topbarIcon">🐾</div>
-      <div>
+
+  <!-- 左侧固定窄栏：永久显示，不抽屉 -->
+  <aside class="sidebar" id="sidebar">
+    <div class="sb-header">
+      <img class="sb-avatar" id="sbAvatar" src="assets/img/zebao.jpg" alt="泽宝" onerror="this.style.display='none';this.insertAdjacentHTML('afterend','<div class=\'sb-avatar-fallback\'>泽</div>');" />
+      <div class="sb-name">泽宝小天地</div>
+      <div class="sb-streak" id="sbStreak">🔥 0 天</div>
+    </div>
+    <ul class="sb-nav" id="sbNav">
+      <li data-route="home"        class="active"><span class="sb-ico">🚓</span><span class="sb-lbl">首页</span></li>
+      <li data-route="chinese"><span class="sb-ico">🚒</span><span class="sb-lbl">语文</span></li>
+      <li data-route="math"><span class="sb-ico">🐕</span><span class="sb-lbl">数学</span></li>
+      <li data-route="calligraphy"><span class="sb-ico">✏️</span><span class="sb-lbl">书法</span></li>
+      <li data-route="habit"><span class="sb-ico">🪥</span><span class="sb-lbl">习惯</span></li>
+      <li data-route="wishlist"><span class="sb-ico">⭐</span><span class="sb-lbl">愿望</span></li>
+      <li data-route="rewards"><span class="sb-ico">🦴</span><span class="sb-lbl">奖励</span></li>
+      <li data-route="settings"><span class="sb-ico">⚙️</span><span class="sb-lbl">设置</span></li>
+    </ul>
+    <div class="sb-foot">v1.0</div>
+  </aside>
+
+  <!-- 右侧主区 -->
+  <div class="main">
+    <!-- 顶部条 -->
+    <header class="topbar">
+      <div class="topbar-icon" id="topbarIcon">🏠</div>
+      <div class="topbar-titles">
         <div class="topbar-sub">汪汪队 · 学习任务</div>
         <div class="topbar-main" id="topbarTitle">首页</div>
       </div>
-    </div>
-    <div class="topbar-right">
-      <div class="bone-chip" id="boneChipTop" title="骨头余额">
-        <span class="bone-emoji">🦴</span><span id="boneCount">0</span>
+      <div class="topbar-right">
+        <div class="bone-chip" id="boneChipTop" title="骨头余额">
+          <span class="bone-emoji">🦴</span><span id="boneCount">0</span>
+        </div>
       </div>
-    </div>
-  </header>
+    </header>
 
-  <!-- 主内容区 -->
-  <main class="content" id="content"></main>
+    <!-- 主内容区 -->
+    <main class="content" id="content"></main>
+  </div>
 
-  <!-- 底部 Tab 快捷入口（移动端友好） -->
-  <nav class="tabbar">
-    <button class="tab" data-route="home"><div class="tab-ico">🏠</div><div>首页</div></button>
-    <button class="tab" data-route="tasks"><div class="tab-ico">📋</div><div>任务</div></button>
-    <button class="tab" data-route="rewards"><div class="tab-ico">🦴</div><div>奖励</div></button>
-    <button class="tab" data-route="me"><div class="tab-ico">🐶</div><div>我的</div></button>
-  </nav>
-
-  <!-- 抽屉遮罩 -->
-  <div class="drawer-mask" id="drawerMask"></div>
-
-  <!-- 左侧导航抽屉 -->
-  <aside class="drawer" id="drawer">
-    <div class="drawer-header">
-      <div class="avatar" id="drawerAvatar">毛</div>
-      <div>
-        <div class="drawer-name">小勇士 <span class="streak-pill" id="streakPill">🔥 0</span></div>
-        <div class="drawer-sub">今天也要加油呀！</div>
-      </div>
-    </div>
-    <ul class="nav-list" id="navList">
-      <li data-route="home"><span class="nav-ico">🏠</span>首页</li>
-      <li data-route="chinese"><span class="nav-ico">📖</span>语文</li>
-      <li data-route="math"><span class="nav-ico">➕</span>数学</li>
-      <li data-route="calligraphy"><span class="nav-ico">✍️</span>书法 · 控笔</li>
-      <li data-route="habit"><span class="nav-ico">🪥</span>习惯</li>
-      <li data-route="wishlist"><span class="nav-ico">🌟</span>愿望清单</li>
-      <li data-route="rewards"><span class="nav-ico">🦴</span>奖励</li>
-      <li data-route="settings"><span class="nav-ico">⚙️</span>设置</li>
-    </ul>
-    <div class="drawer-foot">v1.0 · 家长模式请在设置中开启</div>
-  </aside>
-
-  <!-- 弹层：吐司 -->
+  <!-- 吐司 -->
   <div id="toast" class="toast" hidden></div>
 </div>
 
-<script src="js/data.js?v5"></script>
-<script src="js/app.js?v5"></script>
+<script src="js/data.js?v6"></script>
+<script src="js/app.js?v6"></script>
 <script>
-  // 主动注销任何已注册的 Service Worker，确保拿到最新代码
   if ('serviceWorker' in navigator) {
-    navigator.serviceWorker.getRegistrations().then(regs => {
-      regs.forEach(r => r.unregister());
-    });
+    navigator.serviceWorker.getRegistrations().then(regs => regs.forEach(r => r.unregister()));
   }
 </script>
 </body>
