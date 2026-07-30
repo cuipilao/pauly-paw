@@ -628,10 +628,20 @@
       el('div', { class: 'card' }, [
         el('div', { class: 'row-between' }, [
           el('h3', { style: { margin: 0 } }, ['时长设置']),
-          el('div', { class: 'sub' }, ['当前 ' + State.calliMinutes + ' 分钟'])
+          el('div', { class: 'sub' }, ['当前 ', el('span', { id: 'calliCur' }, [String(State.calliMinutes)]), ' 分钟'])
         ]),
-        el('input', { type: 'range', min: '3', max: '30', step: '1', value: String(State.calliMinutes), class: 'range',
-          on: { input: (e) => { State.calliMinutes = parseInt(e.target.value, 10); save(); } }
+        el('input', { id: 'calliRange', type: 'range', min: '3', max: '30', step: '1', value: String(State.calliMinutes), class: 'range',
+          on: { input: (e) => {
+            State.calliMinutes = parseInt(e.target.value, 10);
+            save();
+            const cur = $('#calliCur'); if (cur) cur.textContent = String(State.calliMinutes);
+            const txt = $('#clockTxt'); if (txt) txt.textContent = fmtTime(State.calliMinutes * 60);
+            // 同步进度条
+            const sec = State.calliMinutes * 60;
+            if (typeof secLeft === 'number' && !running) {
+              secLeft = sec; paintClock(sec, sec);
+            }
+          } }
         }),
         el('div', { class: 'muted', style: { fontSize: '12px', marginTop: '6px' } }, ['家长可拖动调整 3-30 分钟；时间到后会有提示。'])
       ]),
