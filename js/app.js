@@ -255,7 +255,7 @@
         el('h3', null, ['📋 今日任务']),
         el('div', { class: 'sub' }, [todayProgress()])
       ]),
-      el('div', { class: 'card task-list', id: 'taskList' }, renderTodayTasks()),
+      el('div', { class: 'task-grid', id: 'taskList' }, dailyItems().map(taskEntry)),
       // 里程碑
       el('div', { class: 'section-title' }, [
         el('h3', null, ['🏅 坚持徽章']),
