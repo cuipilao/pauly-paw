@@ -123,9 +123,10 @@ button, .sb-nav li, .task-item, .word-tile, .opt, .shop-item, .switch, .icon-btn
   overflow: hidden;
 }
 .sb-header {
-  padding: 14px 6px 10px;
+  padding: 20px 6px 24px;
   text-align: center;
   border-bottom: 1px dashed #E8B776;
+  margin-bottom: 8px;
 }
 .sb-avatar, .sb-avatar-fallback {
   width: 52px; height: 52px;
@@ -163,6 +164,9 @@ button, .sb-nav li, .task-item, .word-tile, .opt, .shop-item, .switch, .icon-btn
   padding: 8px 4px;
   flex: 1;
   overflow-y: auto;
+  display: flex;
+  flex-direction: column;
+  justify-content: space-between;
 }
 .sb-nav::-webkit-scrollbar { display: none; }
 .sb-nav li {
@@ -170,8 +174,8 @@ button, .sb-nav li, .task-item, .word-tile, .opt, .shop-item, .switch, .icon-btn
   flex-direction: column;
   align-items: center;
   gap: 2px;
-  padding: 10px 4px;
-  margin-bottom: 4px;
+  padding: 12px 4px;
+  margin-bottom: 6px;
   border-radius: 10px;
   font-size: 12px;
   font-weight: 800;
@@ -191,7 +195,7 @@ button, .sb-nav li, .task-item, .word-tile, .opt, .shop-item, .switch, .icon-btn
 .sb-lbl { font-size: 12px; }
 
 .sb-foot {
-  padding: 8px 4px;
+  padding: 6px 4px 4px;
   font-size: 9px;
   color: #8A6A2A;
   text-align: center;
