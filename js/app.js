@@ -169,6 +169,66 @@
     State.bones += n;
     toast(`+${n} 🦴  ${reason || ''}`);
     save();
+    flyBone(n);
+  }
+  // 骨头飞出动画：从屏幕中央偏左飞向右上角骨头计数器
+  function flyBone(n) {
+    const target = document.getElementById('boneChipTop');
+    if (!target) return;
+    const tRect = target.getBoundingClientRect();
+    const tx = tRect.left + tRect.width / 2;
+    const ty = tRect.top + tRect.height / 2;
+
+    // 起始位置：屏幕中央偏下
+    const sx = window.innerWidth * 0.5;
+    const sy = window.innerHeight * 0.55;
+
+    // 生成 n 个骨头（最多 5 个，避免太多）
+    const count = Math.min(n, 5);
+    for (let i = 0; i < count; i++) {
+      const bone = document.createElement('div');
+      bone.textContent = '🦴';
+      bone.style.cssText = `
+        position: fixed; left: ${sx}px; top: ${sy}px;
+        font-size: 40px; z-index: 9999; pointer-events: none;
+        transition: all .8s cubic-bezier(.22,.61,.36,1);
+        text-shadow: 0 4px 8px rgba(0,0,0,.2);
+        will-change: transform, opacity;
+      `;
+      document.body.appendChild(bone);
+
+      // 起始：稍带随机偏移
+      const offsetX = (Math.random() - 0.5) * 60;
+      const offsetY = (Math.random() - 0.5) * 40;
+      bone.style.transform = `translate(${offsetX}px, ${offsetY}px) scale(.3)`;
+      bone.style.opacity = '0';
+
+      // 触发动画
+      requestAnimationFrame(() => {
+        setTimeout(() => {
+          bone.style.left = tx + 'px';
+          bone.style.top = ty + 'px';
+          bone.style.transform = `translate(0, 0) scale(1.2) rotate(${(Math.random()-.5)*60}deg)`;
+          bone.style.opacity = '1';
+        }, i * 80);
+      });
+
+      // 到达后：缩小消失 + 计数器跳动
+      setTimeout(() => {
+        bone.style.transform = 'translate(0, 0) scale(0)';
+        bone.style.opacity = '0';
+        setTimeout(() => bone.remove(), 200);
+        // 计数器跳动
+        const chip = document.getElementById('boneChipTop');
+        if (chip) {
+          chip.classList.remove('pop');
+          void chip.offsetWidth; // 触发重排
+          chip.classList.add('pop');
+        }
+        // 更新数字
+        updateHeaderBones();
+      }, 800 + i * 80);
+    }
   }
   function spendBones(n) {
     if (State.bones < n) return false;

@@ -180,8 +180,15 @@ button, .sb-nav li, .task-item, .word-tile, .opt, .shop-item, .switch, .icon-btn
   box-shadow: var(--shadow);
   font-size: 13px;
   flex-shrink: 0;
+  transition: transform .15s;
 }
 .bone-emoji { font-size: 14px; }
+.bone-chip.pop { animation: bone-pop .4s; }
+@keyframes bone-pop {
+  0%   { transform: scale(1); }
+  40%  { transform: scale(1.35); background: #FFF1D1; }
+  100% { transform: scale(1); }
+}
 
 /* ========== 主内容 ========== */
 .content {
